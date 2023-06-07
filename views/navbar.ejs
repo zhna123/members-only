@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand fixed-top" style="background-color: rgba(246,190, 0);">
+  <div class="container-fluid">
+    <a class="navbar-brand mb-0 h1 text-dark" href="/"><strong>MembersOnly</strong></a>
+    <div class="justify-content-end">
+      <% if (locals.currentUser) { %>
+        <% if (currentUser.isAdmin) { %>
+        <span class="me-md-2 navbar-text text-dark">Hello, Club Admin <%= currentUser.first_name %></span>
+        <% } else if (currentUser.isMember) { %>
+        <span class="me-md-2 navbar-text text-dark">Hello, Club Member <%= currentUser.first_name %></span>
+        <% } else { %>
+        <span class="me-md-2 navbar-text text-dark">Hello, <%= currentUser.first_name %></span>
+        <% } %>
+        <% if (!locals.currentUser.isMember) { %>
+        <button type="button" class="btn btn-dark me-md-2" data-bs-toggle="modal" data-bs-target="#joinClubModal">Join Club</button>
+        <% } %>
+        <a href="/auth/log-out" class="btn btn-outline-dark" type="button">Log Out</a>
+
+      <% } else { %>
+        <a href="/auth/log-in" class="btn btn-dark me-md-2" type="button">Log In</a>
+        <a href="/sign-up" class="btn btn-dark" type="button">Sign Up</a>
+      <% } %>
+      
+    </div>
+  </div>
+</nav>
+<!-- Modal - needs to be placed on top level -->
+<div class="modal fade" id="joinClubModal" tabindex="-1" aria-labelledby="joinClubModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="joinClubModalLabel">Join Club</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="joinclub-form" action="/users/join" method="POST">
+          <p class="mb-2">Join as</p>
+          <div class="form-check-inline">
+            <input class="form-check-input" type="radio" name="status" id="flexRadioDefault2" value="member" checked>
+            <label class="form-check-label" for="flexRadioDefault2">
+              Member
+            </label>
+          </div>
+          <div class="form-check-inline">
+            <input class="form-check-input" type="radio" name="status" id="flexRadioDefault1" value="admin">
+            <label class="form-check-label" for="flexRadioDefault1">
+              Admin
+            </label>
+          </div>
+          <div class="mt-3 mb-3">
+            <label for="passcode" class="form-label">Enter passcode</label>
+            <input type="text" class="form-control" id="passcode" name="passcode" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button form="joinclub-form" type="submit" class="btn btn-dark">Join Club</button>
+      </div>
+    </div>
+  </div>
+</div>
