@@ -34,16 +34,20 @@ exports.user_signup_post = [
   .withMessage("Last name is required"),
 
   body("email")
-  .trim()
-  .isLength({min: 1})
-  .escape()
-  .withMessage("Email is required"),
+  .isEmail()
+  .withMessage("Need a valid email address"),
 
   body("pwd")
   .trim()
   .isLength({min: 1})
   .escape()
   .withMessage("Password is required"),
+
+  body("passwordConfirmation")
+  .custom((value, {req}) => {
+    return value === req.body.pwd
+  })
+  .withMessage("Password does not match"),
 
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
@@ -52,7 +56,6 @@ exports.user_signup_post = [
       first_name: req.body.first,
       last_name: req.body.last,
       email: req.body.email,
-      // password: req.body.pwd
     });
     if (!errors.isEmpty()) {
       res.render("sign-up-form", {
